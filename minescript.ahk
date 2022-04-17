@@ -30,6 +30,7 @@ ProgState := 0
 ; 3: ConcreteMode	  - Enter Concrete Mode
 ; 4: MobGrindMode	  - Enter Mob Grinder Mode
 ; 5: KillingMode	  - Enter Killing Mode
+; 6: TreeFarmMode     - Enter TreeFarm Mode for IlMango Universal Tree Farm
 
 
 ; Hotkeys
@@ -38,6 +39,7 @@ Hotkey  !^e,	JumpFly			; Pressing ctrl + alt + e will dubble hit space and fire 
 Hotkey  !^c,	Concrete		; Pressing ctrl + alt + c will start concrete farming
 Hotkey  !^m,	MobGrind		; Pressing ctrl + alt + m will start mob grinding
 Hotkey	!^k,	MobKill			; Pressing ctrl + alt + k will start mob killing
+Hotkey  !^t,	TreeFarm        ; Pressing ctrl + atl + t will start tree farm 
 Hotkey	!^s,	Stop			; Pressing ctrl + alt + s will stop it
 Hotkey  !^w,    SelectWindow 	; Allows user to select window to control by hovering mouse over it and pressing ctrl + alt + w
 
@@ -58,6 +60,7 @@ Menu, OptionsMenu, Add, AFK Mob, MenuAFK
 Menu, OptionsMenu, Add, Concrete, MenuConcrete
 Menu, OptionsMenu, Add, JumpFlying, MenuJumpFly
 Menu, OptionsMenu, Add, MobKill, MenuMobKill
+Menu, OptionsMenu, Add, TreeFarm, MenuTreeFarm
 
 Menu, ClickerMenu, Add, File, :FileMenu
 Menu, ClickerMenu, Add, Help, :HelpMenu
@@ -258,6 +261,18 @@ MenuMobKill:
 	Return
 }
 
+MenuTreeFarm:
+{
+	BreakLoop := 1
+
+	GuiControl, Main:Text, Mode, TreeFarm
+	GuiControl, Main:Hide, MySlider
+	GuiControl, Main:Text, ReminderText, CURRENT AVALIBLE OPTIONS:`no- Pressing ctrl + alt + t will start planting saplins`no- Pressing ctrl + alt + s will stop any AutoKey function above
+
+	ProgState := 6
+	Return
+}
+
 ;===================================================================================================
 ; Called when Ctrl+Alt+E is pressed.
 ; NOTE: Target window MUST be in focus for this to work
@@ -426,6 +441,34 @@ MobKill:
 	ControlClick, , ahk_id %id%, , Left, , NAU
 	Return
 }
+
+
+TreeFarm:
+{
+	if (ProgState != 6)
+	{
+		Return
+	}
+
+	BreakLoop := 0
+	Delay := 10000
+	Sleep 500
+		BreakLoop := 0
+		Loop
+		{
+			if (BreakLoop = 1)
+			{
+				BreakLoop := 0
+				break
+			}
+
+			Sleep (Delay)
+				ControlClick, , ahk_id %id%, ,Right, , NAD
+				ControlClick, , ahk_id %id%, ,Right, , NAU
+		}
+	Return
+}
+
 
 ;==================================================================================================
 ; Called when Ctrl+Alt+S is pressed at ANYTIME
